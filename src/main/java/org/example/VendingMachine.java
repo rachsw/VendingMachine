@@ -1,57 +1,62 @@
 package org.example;
 
-import org.example.database.ProductDatabase;
+import org.example.database.ItemDatabase;
 import org.example.model.CashConfiguration;
-import org.example.model.Product;
+import org.example.model.Item;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public class VendingMachine implements ConsumerController, OperatorController {
 // this sets up both interfaces
-    final int productLimit;
+    final int itemsLimit;
     final List<CashConfiguration> acceptedCoins;
-    final ProductDatabase productDb;
+    final ItemDatabase itemsDb;
 
-    public VendingMachine(int productLimit, List<CashConfiguration> acceptedCoins) {
-        this.productLimit = productLimit;
+    public VendingMachine(int itemsLimit, List<CashConfiguration> acceptedCoins) {
+        this.itemsLimit = itemsLimit;
         this.acceptedCoins = acceptedCoins;
-        this.productDb = new ProductDatabase();
+        this.itemsDb = new ItemDatabase();
     }
 
     @Override
-    public List<Product> ViewProducts() {
-        return productDb.getAllProducts();
+    public List<Item> viewProducts() {
+        return itemsDb.getAllItems();
     }
 
     @Override
-    public List<Product> ViewProduct(String productId) {
+    public List<Item> viewProduct(String productId) {
         return List.of();
     }
 
     @Override
-    public List<CashConfiguration> PurchaseProduct(String productId, List<CashConfiguration> change) {
+    public List<CashConfiguration> purchaseProduct(String productId, List<CashConfiguration> change) {
         return List.of();
     }
 
     @Override
-    public List<Product> getProducts() {
+    public List<Item> getItems() {
         return List.of();
     }
 
     @Override
-    public Product removeProduct(String productId) {
+    public Item removeItem(String productId) {
         return null;
     }
 
     @Override
-    public Product updateProduct(Product product) {
+    public Item updateItemPrice(String productId, double price) {
         return null;
     }
 
     @Override
-    public Product createProduct(Product product) {
-        return productDb.addProduct(product);
+    public Item updateItemStock(String productId, int stock) {
+        return null;
+    }
+
+    @Override
+    public Item createItem(Item item) {
+        return itemsDb.addItem(item);
     }
 
     @Override

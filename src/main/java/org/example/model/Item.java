@@ -1,8 +1,6 @@
 package org.example.model;
 
-import java.util.Date;
-
-public class Product
+public class Item
  {
      String id;
      //might also have type etc in the future
@@ -10,7 +8,7 @@ public class Product
      int stock;
      int limit;
 
-     public Product(String id, Double price, int limit) {
+     public Item(String id, Double price, int limit) {
          this.id = id;
          this.price = price;
          this.stock = 0;

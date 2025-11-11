@@ -1,17 +1,17 @@
 package org.example;
 
 import org.example.model.CashConfiguration;
-import org.example.model.Product;
+import org.example.model.Item;
 
 import java.util.List;
 
 public interface ConsumerController {
 
-    List<Product> ViewProducts();
+    List<Item> viewProducts();
     //get the products price
 
-    List<Product> ViewProduct(String productId);
+    List<Item> viewProduct(String productId);
 
-    List<CashConfiguration> PurchaseProduct(String productId, List<CashConfiguration> change);
+    List<CashConfiguration> purchaseProduct(String productId, List<CashConfiguration> change);
 
 }
