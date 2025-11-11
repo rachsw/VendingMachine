@@ -1,6 +1,8 @@
 package org.example.service;
 
+import org.example.BadInput;
 import org.example.model.ChangeItem;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -63,5 +65,12 @@ class CashServiceTest {
                 new ChangeItem(new BigDecimal(2), 3),
                 new ChangeItem(new BigDecimal(1), 2)), BigDecimal.valueOf(4.20));
         assertEquals(expected, actual);
+    }
+
+    @Test()
+    void canThrowIfUserHasUnderpaid() {
+
+        Assertions.assertThrows(BadInput.class, () -> cashService.getChange(List.of(
+                new ChangeItem(new BigDecimal(2), 1)), BigDecimal.valueOf(4.20)));
     }
 }

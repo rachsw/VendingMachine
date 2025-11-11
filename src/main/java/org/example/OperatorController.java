@@ -1,19 +1,20 @@
 package org.example;
 
-import org.example.model.Cash;
+import org.example.model.CashConfiguration;
 import org.example.model.Product;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface OperatorController {
 
     List<Product> getProducts();
-    Product removeProduct();
-    Product updateProduct(Product product);
-    Product createProduct();
+    Product removeProduct(String productId);
+    Product replaceProduct(Product product);
+    Product createProduct(Product product);
 
-    List<Cash> getTillContents();
-    Cash removeCashItem();
-    Cash addCashItem();
-    Cash updateCashItem();
+    List<CashConfiguration> getTillContents();
+    CashConfiguration removeCashItem(BigDecimal coin);
+    CashConfiguration addCashItem(CashConfiguration coin);
+    CashConfiguration updateCashItem(BigDecimal coin);
 }

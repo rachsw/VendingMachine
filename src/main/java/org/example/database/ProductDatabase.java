@@ -3,6 +3,8 @@ package org.example.database;
 import org.example.model.Product;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ProductDatabase {
@@ -16,12 +18,16 @@ public class ProductDatabase {
         products.put(product.id(), product);
     }
 
-    void remoteProduct(String productId) {
+    void removeProduct(String productId) {
         products.remove(productId);
     }
 
     void updateProduct(Product product) {
-        //replace the existing product with a entire new product
+        //replace the existing product with an entire new product
         products.put(product.id(), product);
+    }
+
+    List<Product> getAllProducts() {
+        return new ArrayList<>(products.values());
     }
 }
