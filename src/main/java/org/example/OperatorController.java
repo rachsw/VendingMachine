@@ -10,7 +10,7 @@ public interface OperatorController {
 
     List<Product> getProducts();
     Product removeProduct(String productId);
-    Product replaceProduct(Product product);
+    Product updateProduct(Product product);
     Product createProduct(Product product);
 
     List<CashConfiguration> getTillContents();

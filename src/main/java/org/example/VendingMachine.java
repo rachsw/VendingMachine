@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.database.ProductDatabase;
 import org.example.model.CashConfiguration;
 import org.example.model.Product;
 
@@ -10,15 +11,17 @@ public class VendingMachine implements ConsumerController, OperatorController {
 // this sets up both interfaces
     final int productLimit;
     final List<CashConfiguration> acceptedCoins;
+    final ProductDatabase productDb;
 
     public VendingMachine(int productLimit, List<CashConfiguration> acceptedCoins) {
         this.productLimit = productLimit;
         this.acceptedCoins = acceptedCoins;
+        this.productDb = new ProductDatabase();
     }
 
     @Override
     public List<Product> ViewProducts() {
-        return List.of();
+        return productDb.getAllProducts();
     }
 
     @Override
@@ -42,13 +45,13 @@ public class VendingMachine implements ConsumerController, OperatorController {
     }
 
     @Override
-    public Product replaceProduct(Product product) {
+    public Product updateProduct(Product product) {
         return null;
     }
 
     @Override
     public Product createProduct(Product product) {
-        return null;
+        return productDb.addProduct(product);
     }
 
     @Override

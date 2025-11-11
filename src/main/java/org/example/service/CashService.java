@@ -67,7 +67,7 @@ public class CashService {
 
     void setupTill(List<CashConfiguration> configurations) {
         for (CashConfiguration configuration : configurations) {
-            temporaryTill.put(new BigDecimal(configuration.value().toString()), configuration);
+            temporaryTill.put(new BigDecimal(configuration.getValue().toString()), configuration);
         }
     }
 }

@@ -20,7 +20,21 @@ class VendingMachineTest {
                 new CashConfiguration(new BigDecimal("0.2"), 0, 10),
                 new CashConfiguration(new BigDecimal("0.1"), 0, 10)
         ));
-        new Product("A1", 2.50d, 10, 10);
-        vm.createProduct()
+        vm.createProduct(new Product("A1", 2.0, 10));
+        assertEquals(vm.ViewProducts().size(), .50d,1);
+    }
+
+    @Test
+    void canUpdateProductInVendingMachine() {
+        VendingMachine vm = new VendingMachine(5, Arrays.asList(
+                new CashConfiguration(new BigDecimal("2"), 0, 10),
+                new CashConfiguration(new BigDecimal("1"), 0, 10),
+                new CashConfiguration(new BigDecimal("0.5"), 0, 10),
+                new CashConfiguration(new BigDecimal("0.2"), 0, 10),
+                new CashConfiguration(new BigDecimal("0.1"), 0, 10)
+        ));
+        vm.createProduct(new Product("A1", 2.0, 10));
+        vm.updateProduct()
+        assertEquals(vm.ViewProducts().size(), .50d,1);
     }
 }

@@ -4,30 +4,31 @@ import org.example.model.Product;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ProductDatabase {
     private final Map<String, Product> products;
 
-    public ProductDatabase(Map<String, Product> products) {
-        this.products = products;
+    public ProductDatabase() {
+        this.products = new HashMap<>();
     }
 
-    void addProduct(Product product) {
-        products.put(product.id(), product);
+    public Product addProduct(Product product) {
+        return products.put(product.getId(), product);
     }
 
-    void removeProduct(String productId) {
+    public void removeProduct(String productId) {
         products.remove(productId);
     }
 
-    void updateProduct(Product product) {
+    public void updateProduct(Product product) {
         //replace the existing product with an entire new product
-        products.put(product.id(), product);
+        products.put(product.getId(), product);
     }
 
-    List<Product> getAllProducts() {
+    public List<Product> getAllProducts() {
         return new ArrayList<>(products.values());
     }
 }
