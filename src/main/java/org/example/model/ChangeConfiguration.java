@@ -18,10 +18,6 @@ public class ChangeConfiguration extends ChangeItem {
         this.limit = limit;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
     public void setValue(int value) {
         this.value = value;
     }

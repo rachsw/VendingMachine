@@ -9,7 +9,7 @@ import java.util.*;
 
 public class CashRegisterService {
     //Will order the keys
-    private final Map<Integer, ChangeConfiguration> temporaryTill = new TreeMap<>(Comparator.reverseOrder());
+    private final Map<Integer, ChangeConfiguration> changeTill = new TreeMap<>(Comparator.reverseOrder());
 
 
     public CashRegisterService() {
@@ -21,26 +21,26 @@ public class CashRegisterService {
     }
 
     public List<ChangeConfiguration> getTillItems() {
-        return new ArrayList<>(temporaryTill.values());
+        return new ArrayList<>(changeTill.values());
     }
 
     public ChangeConfiguration getCoinItem(int coin) {
-        if (!temporaryTill.containsKey(coin)) {
+        if (!changeTill.containsKey(coin)) {
             throw new BadInput("Item does not exist");
         }
-        return temporaryTill.get(coin);
+        return changeTill.get(coin);
     }
 
     public void updateCoinStock(int coin, int stock) {
         ChangeConfiguration changeConfiguration = getCoinItem(coin);
         changeConfiguration.setStock(stock);
-        temporaryTill.put(coin, changeConfiguration);
+        changeTill.put(coin, changeConfiguration);
     }
 
     public void validateChange(List<ChangeItem> cashGiven, int price) {
         //need to check all the coins are ones we accept.
         boolean hasInvalid = cashGiven.stream()
-                .anyMatch(coin -> !temporaryTill.containsKey(coin.getValue()));
+                .anyMatch(coin -> !changeTill.containsKey(coin.getValue()));
 
         if (hasInvalid) {
             //return the coins here
@@ -48,33 +48,79 @@ public class CashRegisterService {
         }
     }
 
+//    // note we need to ensure there is enough change in the till before returning it
+//    public List<ChangeItem> getChange(List<ChangeItem> cashGiven, int price) throws Exception {
+//
+//        for (ChangeItem cash : cashGiven) {
+//            price = price - (cash.getValue() * cash.getStock());
+//        }
+//        if(price == 0) {
+//            //correct amount of change
+//            return new ArrayList<>();
+//        }
+//        //overpaid
+//        if(price < 0) {
+//            return calculateChange(Math.abs(price));
+//        }
+//        else {
+//            throw new BadInput("Not enough cash provided ");
+//        }
+//    }
+
     // note we need to ensure there is enough change in the till before returning it
     public List<ChangeItem> getChange(List<ChangeItem> cashGiven, int price) throws Exception {
+        int totalGiven = cashGiven.stream()
+                .mapToInt(c -> c.getValue() * c.getStock())
+                .sum();
 
+        if (totalGiven < price) {
+            throw new BadInput("Not enough cash provided");
+        }
+
+        if (totalGiven == price){
+            //add all the change to the till
+            return List.of();
+        }
+        Map<Integer, Integer> tempCashGivenTill = new HashMap<>();
         for (ChangeItem cash : cashGiven) {
-            price = price - (cash.getValue() * cash.getStock());
+            tempCashGivenTill.put(cash.getValue(), cash.getStock());
         }
-        if(price == 0) {
-            //correct amount of change
-            return new ArrayList<>();
-        }
-        //overpaid
-        if(price < 0) {
-            return calculateChange(Math.abs(price));
-        }
-        else {
-            throw new BadInput("Not enough cash provided ");
-        }
+
+        int leftOver = totalGiven - price;
+        return calculateChange(leftOver, tempCashGivenTill);
     }
 
-    private List<ChangeItem> calculateChange(int amountToReturn) {
-        List<ChangeItem> change = new ArrayList<>();
+    private List<ChangeItem> calculateChange(int amountToReturn, Map<Integer, Integer> temporaryChangeTill) {
+//        List<ChangeItem> change = new ArrayList<>();
+//
+//        for (int coin : temporaryTill.keySet()) {
+//            int count = amountToReturn / coin;
+//            if (count > 0) {
+//                change.add(new ChangeItem(coin, count));
+//                amountToReturn -= coin * count;
+//            }
+//        }
+//
+//        if (amountToReturn > 0) {
+//            throw new SystemError("Not enough coins");
+//        }
+//        return change;
 
-        for (int coin : temporaryTill.keySet()) {
-            int count = amountToReturn / coin;
-            if (count > 0) {
-                change.add(new ChangeItem(coin, count));
-                amountToReturn -= coin * count;
+        List<ChangeItem> change = new ArrayList<>();
+        for (int key : changeTill.keySet()) {
+            int stock = 0;
+            while (amountToReturn >= key) {
+                var tempStock = temporaryChangeTill.get(key) == null ? 0 : temporaryChangeTill.get(key) ;
+                var tillStock = changeTill.get(key).getStock();
+                if(stock < tempStock + tillStock) {
+                    amountToReturn = amountToReturn - key;
+                    stock++;
+                } else {
+                    break;
+                }
+            }
+            if (stock > 0) {
+                change.add(new ChangeItem(key, stock));
             }
         }
 
@@ -84,25 +130,6 @@ public class CashRegisterService {
         return change;
     }
 
-//   private List<ChangeItem> calculateCoins(BigDecimal amountLeft) {
-//        List<ChangeItem> change = new ArrayList<>();
-//        // lookup algorithm for returning change
-//        //1.50
-//        //We need the keyset to be ordered from highest to lowest
-//        for (BigDecimal key : temporaryTill.keySet()) {
-//           int stock = 0;
-//
-//            while (amountLeft.compareTo(key) >= 0) {
-//                    amountLeft = amountLeft.subtract(key);
-//                    stock++;
-//                change.add(new ChangeItem(key, stock));
-//            }
-//            if (amountLeft.compareTo(BigDecimal.ZERO) == 0) {
-//                break;
-//            }
-//        }
-//        return change;
-//    }
 
 //    void setupTill() {
 //        temporaryTill.put(new BigDecimal("2"), new ChangeConfiguration(new BigDecimal("2"), 5,5));
@@ -113,16 +140,17 @@ public class CashRegisterService {
 //    }
 
     private void setupDefaultTill() {
-        temporaryTill.put(200, new ChangeConfiguration(200, 10));
-        temporaryTill.put(100, new ChangeConfiguration(100, 10));
-        temporaryTill.put(50, new ChangeConfiguration(100, 10));
-        temporaryTill.put(20, new ChangeConfiguration(100, 10));
-        temporaryTill.put(10, new ChangeConfiguration(10, 20));
+        changeTill.put(200, new ChangeConfiguration(200, 10));
+        changeTill.put(100, new ChangeConfiguration(100, 10));
+        changeTill.put(50, new ChangeConfiguration(100, 10));
+        changeTill.put(20, new ChangeConfiguration(100, 10));
+        changeTill.put(10, new ChangeConfiguration(10, 20));
+        changeTill.values().forEach(config -> config.setStock(5));
     }
 
     void setupTill(List<ChangeConfiguration> configurations) {
         for (ChangeConfiguration configuration : configurations) {
-            temporaryTill.put(configuration.getValue(), configuration);
+            changeTill.put(configuration.getValue(), configuration);
         }
     }
 }
