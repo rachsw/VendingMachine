@@ -31,16 +31,8 @@ public class Product {
         return price;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
     public int getStock() {
         return stock;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
     }
 
     @Override

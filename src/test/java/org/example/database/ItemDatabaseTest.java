@@ -1,7 +1,7 @@
 package org.example.database;
 
 import org.example.exceptions.BadInput;
-import org.example.model.ProductItem;
+import org.example.model.ManagedProduct;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ class ItemDatabaseTest {
 
     @Test
     void canCreateItemInDatabase() {
-        var expected = new ProductItem("A1", 200, 10);
+        var expected = new ManagedProduct("A1", 200, 10);
 
         var actual = itemDatabase.createItem(expected);
 
@@ -25,7 +25,7 @@ class ItemDatabaseTest {
 
     @Test
     void canGetItemInDatabase() {
-        var expected = new ProductItem("A1", 200, 10);
+        var expected = new ManagedProduct("A1", 200, 10);
 
         itemDatabase.createItem(expected);
         var actual = itemDatabase.getItemsById(expected.getId());
@@ -36,9 +36,9 @@ class ItemDatabaseTest {
 
     @Test
     void canGetAllItemsInDatabase() {
-        var item1 = new ProductItem("A1", 100, 10);
-        var item2 = new ProductItem("A2", 200, 10);
-        var item3 = new ProductItem("A3", 250, 10);
+        var item1 = new ManagedProduct("A1", 100, 10);
+        var item2 = new ManagedProduct("A2", 200, 10);
+        var item3 = new ManagedProduct("A3", 250, 10);
 
         itemDatabase.createItem(item1);
         itemDatabase.createItem(item2);
@@ -54,9 +54,9 @@ class ItemDatabaseTest {
 
     @Test
     void canDeleteItemInDatabase() {
-        var item1 = new ProductItem("A1", 100, 10);
-        var item2 = new ProductItem("A2", 200, 10);
-        var item3 = new ProductItem("A3", 250, 10);
+        var item1 = new ManagedProduct("A1", 100, 10);
+        var item2 = new ManagedProduct("A2", 200, 10);
+        var item3 = new ManagedProduct("A3", 250, 10);
 
         itemDatabase.createItem(item1);
         itemDatabase.createItem(item2);
@@ -70,7 +70,7 @@ class ItemDatabaseTest {
 
     @Test
     void cannotCreateItemThatAlreadyExists() {
-        var item1 = new ProductItem("A1", 100, 10);
+        var item1 = new ManagedProduct("A1", 100, 10);
         itemDatabase.createItem(item1);
         var error = Assertions.assertThrows(BadInput.class, () -> itemDatabase.createItem(item1));
 
@@ -79,7 +79,7 @@ class ItemDatabaseTest {
 
     @Test
     void cannotGetItemThatDoesNotExists() {
-        var item1 = new ProductItem("A1", 100, 10);
+        var item1 = new ManagedProduct("A1", 100, 10);
         var error = Assertions.assertThrows(BadInput.class, () -> itemDatabase.getItemsById(item1.getId()));
 
         assertEquals("Item does not exist", error.getMessage());
@@ -87,7 +87,7 @@ class ItemDatabaseTest {
 
     @Test
     void canUpdateStockOfItem() {
-        var item1 = new ProductItem("A1", 100, 10);
+        var item1 = new ManagedProduct("A1", 100, 10);
         var newStock = 5;
         itemDatabase.createItem(item1);
 
@@ -98,7 +98,7 @@ class ItemDatabaseTest {
 
     @Test
     void canUpdatePriceOfItem() {
-        var item1 = new ProductItem("A1", 100, 10);
+        var item1 = new ManagedProduct("A1", 100, 10);
         var newPrice = 200;
         itemDatabase.createItem(item1);
 

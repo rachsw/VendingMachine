@@ -1,11 +1,12 @@
 package org.example;
 
+import org.example.exceptions.BadInput;
 import org.example.model.ChangeConfiguration;
-import org.example.model.ProductItem;
+import org.example.model.ManagedProduct;
 import org.example.model.Product;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -14,36 +15,36 @@ import static org.junit.jupiter.api.Assertions.*;
 class VendingMachineTest {
 
     private final VendingMachine vendingMachine = new VendingMachine(5, Arrays.asList(
-            new ChangeConfiguration(new BigDecimal("2"), 0, 10),
-            new ChangeConfiguration(new BigDecimal("1"), 0, 10),
-            new ChangeConfiguration(new BigDecimal("0.5"), 0, 10),
-            new ChangeConfiguration(new BigDecimal("0.2"), 0, 10),
-            new ChangeConfiguration(new BigDecimal("0.1"), 0, 10)
+            new ChangeConfiguration(200, 0, 10),
+            new ChangeConfiguration(100, 0, 10),
+            new ChangeConfiguration(50, 0, 10),
+            new ChangeConfiguration(20, 0, 10),
+            new ChangeConfiguration(10, 0, 10)
     ));
 
     @Test
     void canAddNewProductToVendingMachine() {
         VendingMachine vm = new VendingMachine(5, Arrays.asList(
-                new ChangeConfiguration(new BigDecimal("2"), 0, 10),
-                new ChangeConfiguration(new BigDecimal("1"), 0, 10),
-                new ChangeConfiguration(new BigDecimal("0.5"), 0, 10),
-                new ChangeConfiguration(new BigDecimal("0.2"), 0, 10),
-                new ChangeConfiguration(new BigDecimal("0.1"), 0, 10)
+                new ChangeConfiguration(200, 0, 10),
+                new ChangeConfiguration(100, 0, 10),
+                new ChangeConfiguration(50, 0, 10),
+                new ChangeConfiguration(20, 0, 10),
+                new ChangeConfiguration(10, 0, 10)
         ));
-        vm.createItem(new ProductItem("A1", 200, 10));
+        vm.createItem(new ManagedProduct("A1", 200, 10));
         assertEquals(.50d, vm.viewProducts().size(),1);
     }
 
     @Test
     void canUpdateItemPriceInVendingMachine() {
         VendingMachine vm = new VendingMachine(5, Arrays.asList(
-                new ChangeConfiguration(new BigDecimal("2"), 0, 10),
-                new ChangeConfiguration(new BigDecimal("1"), 0, 10),
-                new ChangeConfiguration(new BigDecimal("0.5"), 0, 10),
-                new ChangeConfiguration(new BigDecimal("0.2"), 0, 10),
-                new ChangeConfiguration(new BigDecimal("0.1"), 0, 10)
+                new ChangeConfiguration(200, 0, 10),
+                new ChangeConfiguration(100, 0, 10),
+                new ChangeConfiguration(50, 0, 10),
+                new ChangeConfiguration(20, 0, 10),
+                new ChangeConfiguration(10, 0, 10)
         ));
-        vm.createItem(new ProductItem("A1", 200, 10));
+        vm.createItem(new ManagedProduct("A1", 200, 10));
         //Todo fix me
 //        vm.updateProductStock()
         assertEquals(.50d, vm.viewProducts().size(),1);
@@ -51,8 +52,8 @@ class VendingMachineTest {
 
     @Test
     void canViewProductById(){
-        var item1 = vendingMachine.createItem(new ProductItem("A1", 100, 10));
-        vendingMachine.createItem(new ProductItem("A2", 200, 10));
+        var item1 = vendingMachine.createItem(new ManagedProduct("A1", 100, 10));
+        vendingMachine.createItem(new ManagedProduct("A2", 200, 10));
 
         var expectedProduct = new Product(item1.getId(), item1.getPrice(), 0);
 
@@ -63,8 +64,8 @@ class VendingMachineTest {
 
     @Test
     void canViewProductList(){
-        var item1 = vendingMachine.createItem(new ProductItem("A1", 100, 10));
-        var item2 = vendingMachine.createItem(new ProductItem("A2", 200, 10));
+        var item1 = vendingMachine.createItem(new ManagedProduct("A1", 100, 10));
+        var item2 = vendingMachine.createItem(new ManagedProduct("A2", 200, 10));
 
         var expectedProduct1 = new Product(item1.getId(), item1.getPrice(), 0);
         var expectedProduct2 = new Product(item2.getId(), item2.getPrice(), 0);
@@ -77,7 +78,7 @@ class VendingMachineTest {
 
     @Test
     void canUpdateItemStock() {
-        var item1 = vendingMachine.createItem(new ProductItem("A1", 100, 10));
+        var item1 = vendingMachine.createItem(new ManagedProduct("A1", 100, 10));
         var expectedStock = 5;
         vendingMachine.updateItemStock(item1.getId(), expectedStock);
         var actual = vendingMachine.viewProduct(item1.getId()).getStock();
@@ -86,9 +87,20 @@ class VendingMachineTest {
     }
 
     @Test
+    void canFailToUpdateItemStockIfItsFull() {
+        var item1 = vendingMachine.createItem(new ManagedProduct("A1", 100, 10));
+        var expectedStock = 11;
+
+        var actual = Assertions.assertThrows(BadInput.class, () -> vendingMachine.updateItemStock(item1.getId(), expectedStock));
+
+        assertEquals("Over the stock limit", actual.getMessage());
+    }
+
+    @Test
     void canPurchaseProduct(){
-        var item1 = vendingMachine.createItem(new ProductItem("A1", 100, 10));
+        var item1 = vendingMachine.createItem(new ManagedProduct("A1", 100, 10));
         vendingMachine.updateItemStock(item1.getId(), 5);
+        //todo not providing change yet.
         vendingMachine.purchaseProduct(item1.getId(), new ArrayList<>());
 
         var actual = vendingMachine.viewProduct(item1.getId());

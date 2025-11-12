@@ -4,28 +4,20 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class ChangeItem {
-    BigDecimal value;
+    int value;
     int stock;
 
-    public ChangeItem(BigDecimal value, int stock) {
+    public ChangeItem(int value, int stock) {
         this.value = value;
         this.stock = stock;
     }
 
-    public BigDecimal getValue() {
+    public int getValue() {
         return value;
-    }
-
-    public void setValue(BigDecimal value) {
-        this.value = value;
     }
 
     public int getStock() {
         return stock;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
     }
 
     @Override

@@ -10,7 +10,7 @@ class ChangeConfigurationTest {
 
     @Test
     void createCashObject() {
-        var cashObject = new ChangeConfiguration(  new BigDecimal("0.1"), 10, 10);
+        var cashObject = new ChangeConfiguration(10, 10, 10);
 
         assertNotNull(cashObject);
     }

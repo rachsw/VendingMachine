@@ -2,7 +2,7 @@
 [Instructions.MD](Instructions.MD)
 
 Assumptions
-- only one productItem is bought at a time? e.g how can multiple people buy from the same vending machine at the same time?
+- only one managedProduct is bought at a time? e.g how can multiple people buy from the same vending machine at the same time?
 - Currency is not an issue, can account for it later? e.g validation for currency being the correct currency
 - We won't validate the operator providing the wrong change in e.g adding 0.3? do we validate that?
 - supported coin types should be seen as immutable for any given instance of the vending machine
