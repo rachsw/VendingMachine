@@ -3,10 +3,9 @@ package org.example;
 import org.example.model.ChangeConfiguration;
 import org.example.model.ManagedProduct;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-public interface OperatorController {
+public interface OperatorInterface {
 
     List<ManagedProduct> getItems();
     void removeItem(String productId);
@@ -15,7 +14,9 @@ public interface OperatorController {
     ManagedProduct createItem(ManagedProduct managedProduct);
 
     List<ChangeConfiguration> getTillContents();
-    ChangeConfiguration removeCashItem(BigDecimal coin);
-    ChangeConfiguration addCashItem(ChangeConfiguration coin);
-    ChangeConfiguration updateCashItem(BigDecimal coin);
+//    //do we need this??
+//    void removeCashItem(int coin);
+//    //do we also need this??
+//    ChangeItem addCashItem(ChangeConfiguration coin);
+    void updateCashStock(int coin, int stock);
 }

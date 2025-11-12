@@ -1,6 +1,7 @@
 package org.example.database;
 
 import org.example.exceptions.BadInput;
+import org.example.exceptions.SystemError;
 import org.example.model.ManagedProduct;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -75,6 +76,24 @@ class ItemDatabaseTest {
         var error = Assertions.assertThrows(BadInput.class, () -> itemDatabase.createItem(item1));
 
         assertEquals("Item already exists", error.getMessage());
+    }
+
+    @Test
+    void cannotCreateItemIfVendingMachineFull() {
+        var item1 = new ManagedProduct("A1", 100, 10);
+        var item2 = new ManagedProduct("A2", 100, 10);
+        var item3 = new ManagedProduct("A3", 100, 10);
+        var item4 = new ManagedProduct("A4", 100, 10);
+        var item5 = new ManagedProduct("A5", 100, 10);
+        var item6 = new ManagedProduct("A6", 100, 10);
+        itemDatabase.createItem(item1);
+        itemDatabase.createItem(item2);
+        itemDatabase.createItem(item3);
+        itemDatabase.createItem(item4);
+        itemDatabase.createItem(item5);
+        var error = Assertions.assertThrows(SystemError.class, () -> itemDatabase.createItem(item6));
+
+        assertEquals("Product limit reached please remove products before adding new ones", error.getMessage());
     }
 
     @Test

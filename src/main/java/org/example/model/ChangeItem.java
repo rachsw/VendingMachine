@@ -1,6 +1,5 @@
 package org.example.model;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 public class ChangeItem {
@@ -20,11 +19,15 @@ public class ChangeItem {
         return stock;
     }
 
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        ChangeItem that = (ChangeItem) o;
-        return stock == that.stock && Objects.equals(value, that.value);
+        if (this == o) return true;
+        if (!(o instanceof ChangeItem that)) return false;
+        return value == that.value && stock == that.stock;
     }
 
     @Override

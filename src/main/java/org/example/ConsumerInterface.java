@@ -5,7 +5,7 @@ import org.example.model.Product;
 
 import java.util.List;
 
-public interface ConsumerController {
+public interface ConsumerInterface {
 
     //Consumer only needs to realistically see a product that has an ID and a price
     List<Product> viewProducts();

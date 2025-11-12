@@ -1,6 +1,7 @@
 package org.example.database;
 
 import org.example.exceptions.BadInput;
+import org.example.exceptions.SystemError;
 import org.example.model.ManagedProduct;
 
 
@@ -13,21 +14,24 @@ public class ItemDatabase {
     //temporary map of String, where String is the ItemId
     private final Map<String, ManagedProduct> items;
 
-    private final int limit;
+    private final Integer limit;
 
     public ItemDatabase(int limit) {
         this.items = new HashMap<>();
         this.limit = limit;
     }
 
-    public int getLimit() {
-        return limit;
+    private boolean hasReachedProductLimit() {
+        return limit.equals(items.size());
     }
 
     public ManagedProduct createItem(ManagedProduct managedProduct) {
         //logic will throw if the item already exists here
         if(items.containsKey(managedProduct.getId())) {
             throw new BadInput("Item already exists");
+        }
+        if(hasReachedProductLimit()) {
+            throw new SystemError("Product limit reached please remove products before adding new ones");
         }
         items.put(managedProduct.getId(), managedProduct);
         return items.get(managedProduct.getId());

@@ -8,10 +8,9 @@ import org.example.model.ManagedProduct;
 import org.example.model.Product;
 import org.example.service.CashRegisterService;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-public class VendingMachine implements ConsumerController, OperatorController {
+public class VendingMachine implements ConsumerInterface, OperatorInterface {
 // this sets up both interfaces
     final int itemsLimit;
     final List<ChangeConfiguration> acceptedCoins;
@@ -77,18 +76,22 @@ public class VendingMachine implements ConsumerController, OperatorController {
     }
 
     public List<ChangeConfiguration> getTillContents() {
-        return List.of();
+        return cashRegisterService.getTillItems();
     }
 
-    public ChangeConfiguration removeCashItem(BigDecimal coin) {
-        return null;
+//    public void removeCashItem(int coin) {
+//
+//    }
+//
+//    public ChangeItem addCashItem(ChangeConfiguration coin) {
+//        return null;
+//    }
+
+    public void updateCashStock(int coin, int stock) {
+        if (stock > cashRegisterService.getCoinItem(coin).getLimit()) {
+            throw new BadInput("Over the stock limit");
+        }
+        cashRegisterService.updateCoinStock(coin, stock);
     }
 
-    public ChangeConfiguration addCashItem(ChangeConfiguration coin) {
-        return null;
-    }
-
-    public ChangeConfiguration updateCashItem(BigDecimal coin) {
-        return null;
-    }
 }
