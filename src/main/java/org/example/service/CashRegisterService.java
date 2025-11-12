@@ -37,6 +37,21 @@ public class CashRegisterService {
         changeTill.put(coin, changeConfiguration);
     }
 
+    //Todo Steps to implement
+    public void purchaseProductWithCoins(List<ChangeItem> cashGiven, int price){
+        // the product service provides the cash service with the price and cash given
+        //we need to first validate the coins are ones we can accept
+        //then we temporarily store the coins somewhere
+        // if there is enough change exactly we return no change
+        // if there is not enough change we return the change and cancel the operation
+        // if there is change leftover we
+        //loop through and see how much change we need to provide and make checks to see if the change has stock in both the till and temporary holder
+        //if we dont have enough change throw an error and stop the purchase
+        // if we do have enough change then we provide that back to the user
+        //then we put the temporary change in the till
+        // then we take away and change we want to give to the user
+    }
+
     public void validateChange(List<ChangeItem> cashGiven, int price) {
         //need to check all the coins are ones we accept.
         boolean hasInvalid = cashGiven.stream()
