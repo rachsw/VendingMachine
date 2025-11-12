@@ -1,30 +1,30 @@
 package org.example.service;
 
-import org.example.BadInput;
-import org.example.model.CashConfiguration;
+import org.example.exceptions.BadInput;
+import org.example.model.ChangeConfiguration;
 import org.example.model.ChangeItem;
 
 import java.math.BigDecimal;
 import java.util.*;
 
-public class CashService {
+public class CashRegisterService {
     //Will order the keys
-    Map<BigDecimal, CashConfiguration> temporaryTill = new TreeMap<>(Comparator.reverseOrder());
+    Map<BigDecimal, ChangeConfiguration> temporaryTill = new TreeMap<>(Comparator.reverseOrder());
 
 
-    public CashService() {
+    public CashRegisterService() {
         setupTill();
     }
 
-    public CashService(List<CashConfiguration> cashConfigurations) {
-        setupTill(cashConfigurations);
+    public CashRegisterService(List<ChangeConfiguration> changeConfigurations) {
+        setupTill(changeConfigurations);
     }
 
     // note we need to ensure there is enough change in the till before returning it
     public List<ChangeItem> getChange(List<ChangeItem> cashGiven, BigDecimal price) throws Exception {
 
         for (ChangeItem cash : cashGiven) {
-            price = price.subtract(cash.value().multiply(BigDecimal.valueOf(cash.stock())));
+            price = price.subtract(cash.getValue().multiply(BigDecimal.valueOf(cash.getStock())));
         }
         if(price.compareTo(BigDecimal.ZERO) == 0) {
             return new ArrayList<>();
@@ -58,15 +58,15 @@ public class CashService {
     }
 
     void setupTill() {
-        temporaryTill.put(new BigDecimal("2"), new CashConfiguration(new BigDecimal("2"), 5,5));
-        temporaryTill.put(new BigDecimal("1"), new CashConfiguration(new BigDecimal("1"), 5,  5));
-        temporaryTill.put(new BigDecimal("0.5"), new CashConfiguration(new BigDecimal("0.5"), 5,  5));
-        temporaryTill.put(new BigDecimal("0.2"), new CashConfiguration(new BigDecimal("0.2"), 5, 5));
-        temporaryTill.put(new BigDecimal("0.1"), new CashConfiguration(new BigDecimal("0.1"), 5,  5));
+        temporaryTill.put(new BigDecimal("2"), new ChangeConfiguration(new BigDecimal("2"), 5,5));
+        temporaryTill.put(new BigDecimal("1"), new ChangeConfiguration(new BigDecimal("1"), 5,  5));
+        temporaryTill.put(new BigDecimal("0.5"), new ChangeConfiguration(new BigDecimal("0.5"), 5,  5));
+        temporaryTill.put(new BigDecimal("0.2"), new ChangeConfiguration(new BigDecimal("0.2"), 5, 5));
+        temporaryTill.put(new BigDecimal("0.1"), new ChangeConfiguration(new BigDecimal("0.1"), 5,  5));
     }
 
-    void setupTill(List<CashConfiguration> configurations) {
-        for (CashConfiguration configuration : configurations) {
+    void setupTill(List<ChangeConfiguration> configurations) {
+        for (ChangeConfiguration configuration : configurations) {
             temporaryTill.put(new BigDecimal(configuration.getValue().toString()), configuration);
         }
     }

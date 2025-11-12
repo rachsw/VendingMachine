@@ -2,43 +2,43 @@ Java Engineer - Coding Challenge
 
 This is intended to be a coding exercise done at home, at a time convenient to you, using the tools and libraries that you’re comfortable working with. We will be looking for clean, readable, correct code over code highly optimized for performance. There is no limit to the amount of time you spend on it, but it is feasible to build a complete, working solution in an evening.
 
-Design and implement a class representing a basic vending machine capable of keeping track of the number of items of each type currently in the machine, the amount of change currently in the machine for each type of coin, and to return correct change given a item selection and a set of coins submitted. The solution is expected to be in the form of two interfaces (see below) and a class implementing these interfaces, along with any helpers etc that you may wish to create.
+Design and implement a class representing a basic vending machine capable of keeping track of the number of items of each type currently in the machine, the amount of change currently in the machine for each type of coin, and to return correct change given a productItem selection and a set of coins submitted. The solution is expected to be in the form of two interfaces (see below) and a class implementing these interfaces, along with any helpers etc that you may wish to create.
 
-Each vending machine instance has a fixed number of item slots, and supports a fixed number of coin types (both set at instantiation time), but can have price and quantity for each item slot adjusted as well we the amount of change available - imagine an operator collecting money from the machine, filling it up with new items and potentially changing which products are being sold.
+Each vending machine instance has a fixed number of productItem slots, and supports a fixed number of coin types (both set at instantiation time), but can have price and quantity for each productItem slot adjusted as well we the amount of change available - imagine an operator collecting money from the machine, filling it up with new items and potentially changing which products are being sold.
 
-The vending machine also supports price display and actual purchases of products using coins provided by a user. This operation is expected to work the way a vending machine would, i.e. buying a item decreases the inventory for that item by one, and the amount of change in the machine is updated.
+The vending machine also supports price display and actual purchases of products using coins provided by a user. This operation is expected to work the way a vending machine would, i.e. buying a productItem decreases the inventory for that productItem by one, and the amount of change in the machine is updated.
 
-Please focus on the vending machine itself rather than a rich domain around products. It is perfectly fine to represent a item with simply a string or number. Also note that the spec is intentionally vague and all method signatures or names are for illustration purposes only, please select method names, method signatures etc to your liking, as long as the implementation supports the behaviour outlined.
+Please focus on the vending machine itself rather than a rich domain around products. It is perfectly fine to represent a productItem with simply a string or number. Also note that the spec is intentionally vague and all method signatures or names are for illustration purposes only, please select method names, method signatures etc to your liking, as long as the implementation supports the behaviour outlined.
 
 Constructing a vending machine instance
 
-The vending machine class is instantiated with a set of item slots and a set of supported coin types. While the number of available products per slot, item price, and amount of change available can all change (see below), the set of item slots and supported coin types should be seen as immutable for any given instance of the vending machine. An example constructor invocation may be new VendingMachine(10, Arrays.asList(0.10, 0.20, 0.50, 1.0))
+The vending machine class is instantiated with a set of productItem slots and a set of supported coin types. While the number of available products per slot, productItem price, and amount of change available can all change (see below), the set of productItem slots and supported coin types should be seen as immutable for any given instance of the vending machine. An example constructor invocation may be new VendingMachine(10, Arrays.asList(0.10, 0.20, 0.50, 1.0))
 
-… to support 10 item slots (implicitly identified as 0..9), and coins worth 10p, 20p, 50p and £1, but you are free to choose the types as you see fit.
+… to support 10 productItem slots (implicitly identified as 0..9), and coins worth 10p, 20p, 50p and £1, but you are free to choose the types as you see fit.
 
 Performing maintenance on the vending machine
 
 Design and implement a vending machine interface to support the following maintenance operations:
 
-Set/get the number of items for a given item slot
+Set/get the number of items for a given productItem slot
 
-Set/get the price per item for a given item slot
+Set/get the price per productItem for a given productItem slot
 
 Set/get the number of coins available for a given type of coin
 
-The implementation should be thread-safe and throw an appropriate exception for operations that do not make sense, e.g. IllegalStateException if setting the number of items for a item slot with no price specified, or IllegalArgumentException if trying to set the price for a item slot that the machine does not have.
+The implementation should be thread-safe and throw an appropriate exception for operations that do not make sense, e.g. IllegalStateException if setting the number of items for a productItem slot with no price specified, or IllegalArgumentException if trying to set the price for a productItem slot that the machine does not have.
 
 Consumer use of the vending machine
 
 Design and implement an interface representing operations that can be performed by users of the vending machine:
 
-Get the price per item for a given item slot
+Get the price per productItem for a given productItem slot
 
-Buy the item for a given item slot. This should be one operation that accepts a item slot identifier, a collection of coins, and returns another collection of coins representing the change given if successful, e.g:
+Buy the productItem for a given productItem slot. This should be one operation that accepts a productItem slot identifier, a collection of coins, and returns another collection of coins representing the change given if successful, e.g:
 
-buyProduct(1, Arrays.asList(1.0, 1.0)) might return an array of {0.5, 0.2, 0.1} if the item costs £1.30
+buyProduct(1, Arrays.asList(1.0, 1.0)) might return an array of {0.5, 0.2, 0.1} if the productItem costs £1.30
 
-The implementation should throw IllegalStateException if the current state of the machine does not support the operation (e.g. the item is sold out, the item doesn’t have a price), and should throw IllegalArgumentException if the parameters are invalid (non-existing item slot referenced, not enough money provided).
+The implementation should throw IllegalStateException if the current state of the machine does not support the operation (e.g. the productItem is sold out, the productItem doesn’t have a price), and should throw IllegalArgumentException if the parameters are invalid (non-existing productItem slot referenced, not enough money provided).
 
 Performance is a secondary concern, but the implementation should always allow for purchase as long as the exact change in any form can be returned. Please briefly document the strategy that you’ve chosen for providing the “best” set of coins returned and any trade-offs you have done.
 
