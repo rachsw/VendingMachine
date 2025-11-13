@@ -2,8 +2,7 @@ package org.example.model;
 
 import java.util.Objects;
 
-//simplify this.
-//we can definitely just have a map of the change and the value.....
+// a user facing Coin item
 public class CoinItem {
     int value;
     int stock;

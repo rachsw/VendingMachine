@@ -1,6 +1,5 @@
 package org.example.model;
 
-//rename me
 public class ManagedProduct extends Product
  {
      //might also have type etc in the future
@@ -15,10 +14,6 @@ public class ManagedProduct extends Product
 
      public int getLimit() {
          return limit;
-     }
-
-     public void setLimit(int limit) {
-         this.limit = limit;
      }
 
      public void setStock(int stock) {

@@ -36,17 +36,19 @@ class VendingMachineTest {
 
     @Test
     void canUpdateItemPriceInVendingMachine() {
-        VendingMachine vm = new VendingMachine(5, List.of(
+        var expected = 5;
+        var product = new ManagedProduct("A1", 200, 10);
+        VendingMachine vendingMachine = new VendingMachine(5, List.of(
                 new CoinItem(200,  10),
                 new CoinItem(100,  10),
                 new CoinItem(50,  10),
                 new CoinItem(20,  10),
                 new CoinItem(10,  10)
         ));
-        vm.createItem(new ManagedProduct("A1", 200, 10));
-        //Todo fix me
-//        vm.updateProductStock()
-        assertEquals(.50d, vm.viewProducts().size(),1);
+        vendingMachine.createItem(product);
+        vendingMachine.updateItemStock(product.getId(), expected);
+        assertEquals(.50d, vendingMachine.viewProducts().size(),1);
+        assertEquals(expected, vendingMachine.viewProduct(product.getId()).getStock());
     }
 
     @Test

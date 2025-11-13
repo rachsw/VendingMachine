@@ -22,10 +22,6 @@ public class Product {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     //check int is ok for this?
     public int getPrice() {
         return price;
