@@ -5,9 +5,7 @@ import org.example.model.CoinItem;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,42 +14,50 @@ class CashRegisterServiceTest {
     final CashRegisterService cashRegisterService = new CashRegisterService();
 
     @Test
-    void getNoChangeForExactAmount() throws Exception {
-        var expected = new ArrayList<>();
+    void canGiveCorrectChange() {
+        Map<Integer, Integer> coinsAvailable = new HashMap<>();
+        coinsAvailable.put(200, 10);
+        coinsAvailable.put(100, 13);
+        coinsAvailable.put(50, 10);
+        coinsAvailable.put(20, 10);
+        coinsAvailable.put(10, 10);
 
-        var actual = cashRegisterService.getChange(Arrays.asList(
-                new CoinItem(20, 5),
-                new CoinItem(100, 1),
-                new CoinItem(50, 1)), 250);
-        assertEquals(actual, expected);
-    }
+        List<CoinItem> expected = List.of(
+                new CoinItem(200, 1),
+                new CoinItem(50, 1));
 
-    @Test
-    void canGiveCorrectChange() throws Exception {
-        var expected = List.of(new CoinItem(50, 1));
-
-        //$3
-        var actual = cashRegisterService.getChange(List.of(
-                new CoinItem(100, 3)), 250);
+        List<CoinItem> actual = cashRegisterService.calculateChangeToReturn(coinsAvailable, 250);
         assertEquals(expected, actual);
     }
 
     @Test
-    void canGiveCorrectChangeMultiCoin() throws Exception {
-        var expected = List.of(
-                new CoinItem(100, 1),
-                new CoinItem(50, 1)
-                );
+    void canGiveCorrectChangeMultiCoin() {
+        Map<Integer, Integer> coinsAvailable = new HashMap<>();
+        coinsAvailable.put(200, 2);
+        coinsAvailable.put(100, 2);
+        coinsAvailable.put(50, 2);
+        coinsAvailable.put(10, 2);
 
-        //$3
-        var actual = cashRegisterService.getChange(List.of(
-                new CoinItem(200, 2)), 250);
+        List<CoinItem> expected = List.of(
+                new CoinItem(100, 1),
+                new CoinItem(50, 1),
+                new CoinItem(10, 2)
+        );
+
+        List<CoinItem> actual = cashRegisterService.calculateChangeToReturn(coinsAvailable, 170);
         assertEquals(expected, actual);
     }
 
     @Test
-    void canGiveCorrectChangeAllCoins() throws Exception {
-        var expected = List.of(
+    void canGiveCorrectChangeAllCoins() {
+        Map<Integer, Integer> coinsAvailable = new HashMap<>();
+        coinsAvailable.put(200, 3);
+        coinsAvailable.put(100, 2);
+        coinsAvailable.put(50, 2);
+        coinsAvailable.put(20, 2);
+        coinsAvailable.put(10, 2);
+
+        List<CoinItem> expected = List.of(
                 new CoinItem(200, 1),
                 new CoinItem(100, 1),
                 new CoinItem(50, 1),
@@ -59,28 +65,36 @@ class CashRegisterServiceTest {
                 new CoinItem(10, 1)
         );
 
-        //need to fix this rounding issue!
-        var actual = cashRegisterService.getChange(List.of(
-                new CoinItem(200, 3),
-                new CoinItem(100, 2)), 420);
+        List<CoinItem> actual = cashRegisterService.calculateChangeToReturn(coinsAvailable, 380);
         assertEquals(expected, actual);
     }
 
-    @Test()
+    @Test
     void canThrowIfUserHasUnderpaid() {
+        var coinList = List.of(new CoinItem(50, 1));
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> cashRegisterService.getChange(List.of(
-                new CoinItem(200, 1)), 420));
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                cashRegisterService.processCoinTransaction(coinList, 420));
     }
 
-    @Test()
+    @Test
+    void canThrowIfUserHasCashInvalid() {
+        var coinList = List.of(new CoinItem(12, 1));
+
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                cashRegisterService.processCoinTransaction(coinList, 420));
+    }
+
+    @Test
     void canThrowIfNotEnoughChangeInTill() {
         CashRegisterService cashRegister = new CashRegisterService(List.of(
-                new CoinItem(50, 5)));
+                new CoinItem(50, 5)
+        ));
 
-        Assertions.assertThrows(IllegalStateException.class, () -> cashRegister.getChange(List.of(
-                new CoinItem(200, 4)), 420));
+        Map<Integer, Integer> coinsAvailable = new HashMap<>();
+        coinsAvailable.put(200, 4);
+
+        Assertions.assertThrows(IllegalStateException.class, () ->
+                cashRegister.calculateChangeToReturn(coinsAvailable, 420));
     }
-
-
 }

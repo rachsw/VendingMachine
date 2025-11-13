@@ -21,15 +21,12 @@ public class CoinItem {
         return stock;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CoinItem that)) return false;
-        return value == that.value && stock == that.stock;
+        if (!(o instanceof CoinItem)) return false;
+        CoinItem coinItem = (CoinItem) o;
+        return value == coinItem.value && stock == coinItem.stock;
     }
 
     @Override

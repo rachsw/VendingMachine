@@ -39,16 +39,14 @@ public class VendingMachine implements ConsumerInterface, OperatorInterface {
     }
 
     public List<CoinItem> purchaseProduct(String productId, List<CoinItem> change) {
-        var itemStock = itemsDb.getItemsById(productId).getStock();
-        if (itemStock <= 0) {
+        var item = itemsDb.getItemsById(productId);
+        if (item.getStock() <= 0) {
             throw new IllegalStateException("Not enough stock of this product");
         }
-        itemsDb.updateItemStock(productId, itemStock - 1);
+        itemsDb.updateItemStock(productId, item.getStock() - 1);
         //could add a Log here if stock is getting low.
-        //check stock
-        //decrease stock
-        //todo return cash
-        return List.of();
+
+        return cashRegisterService.processCoinTransaction(change, item.getPrice());
     }
 
     public List<ManagedProduct> getItems() {
