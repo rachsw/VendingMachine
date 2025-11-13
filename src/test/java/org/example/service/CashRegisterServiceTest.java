@@ -1,7 +1,6 @@
 package org.example.service;
 
-import org.example.exceptions.BadInput;
-import org.example.exceptions.SystemError;
+
 import org.example.model.ChangeConfiguration;
 import org.example.model.ChangeItem;
 import org.junit.jupiter.api.Assertions;
@@ -71,7 +70,7 @@ class CashRegisterServiceTest {
     @Test()
     void canThrowIfUserHasUnderpaid() {
 
-        Assertions.assertThrows(BadInput.class, () -> cashRegisterService.getChange(List.of(
+        Assertions.assertThrows(IllegalArgumentException.class, () -> cashRegisterService.getChange(List.of(
                 new ChangeItem(200, 1)), 420));
     }
 
@@ -80,7 +79,7 @@ class CashRegisterServiceTest {
         CashRegisterService cashRegister = new CashRegisterService(List.of(
                 new ChangeConfiguration(50, 5)));
 
-        Assertions.assertThrows(SystemError.class, () -> cashRegister.getChange(List.of(
+        Assertions.assertThrows(IllegalStateException.class, () -> cashRegister.getChange(List.of(
                 new ChangeItem(200, 4)), 420));
     }
 

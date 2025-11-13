@@ -1,7 +1,5 @@
 package org.example.database;
 
-import org.example.exceptions.BadInput;
-import org.example.exceptions.SystemError;
 import org.example.model.ManagedProduct;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -73,7 +71,7 @@ class ItemDatabaseTest {
     void cannotCreateItemThatAlreadyExists() {
         var item1 = new ManagedProduct("A1", 100, 10);
         itemDatabase.createItem(item1);
-        var error = Assertions.assertThrows(BadInput.class, () -> itemDatabase.createItem(item1));
+        var error = Assertions.assertThrows(IllegalArgumentException.class, () -> itemDatabase.createItem(item1));
 
         assertEquals("Item already exists", error.getMessage());
     }
@@ -91,7 +89,7 @@ class ItemDatabaseTest {
         itemDatabase.createItem(item3);
         itemDatabase.createItem(item4);
         itemDatabase.createItem(item5);
-        var error = Assertions.assertThrows(SystemError.class, () -> itemDatabase.createItem(item6));
+        var error = Assertions.assertThrows(IllegalStateException.class, () -> itemDatabase.createItem(item6));
 
         assertEquals("Product limit reached please remove products before adding new ones", error.getMessage());
     }
@@ -99,7 +97,7 @@ class ItemDatabaseTest {
     @Test
     void cannotGetItemThatDoesNotExists() {
         var item1 = new ManagedProduct("A1", 100, 10);
-        var error = Assertions.assertThrows(BadInput.class, () -> itemDatabase.getItemsById(item1.getId()));
+        var error = Assertions.assertThrows(IllegalArgumentException.class, () -> itemDatabase.getItemsById(item1.getId()));
 
         assertEquals("Item does not exist", error.getMessage());
     }

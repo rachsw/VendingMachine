@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.exceptions.BadInput;
+
 import org.example.model.ChangeConfiguration;
 import org.example.model.ManagedProduct;
 import org.example.model.Product;
@@ -91,7 +91,7 @@ class VendingMachineTest {
         var item1 = vendingMachine.createItem(new ManagedProduct("A1", 100, 10));
         var expectedStock = 11;
 
-        var actual = Assertions.assertThrows(BadInput.class, () -> vendingMachine.updateItemStock(item1.getId(), expectedStock));
+        var actual = Assertions.assertThrows(IllegalStateException.class, () -> vendingMachine.updateItemStock(item1.getId(), expectedStock));
 
         assertEquals("Over the stock limit", actual.getMessage());
     }

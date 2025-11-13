@@ -1,7 +1,5 @@
 package org.example.database;
 
-import org.example.exceptions.BadInput;
-import org.example.exceptions.SystemError;
 import org.example.model.ManagedProduct;
 
 
@@ -28,10 +26,10 @@ public class ItemDatabase {
     public ManagedProduct createItem(ManagedProduct managedProduct) {
         //logic will throw if the item already exists here
         if(items.containsKey(managedProduct.getId())) {
-            throw new BadInput("Item already exists");
+            throw new IllegalArgumentException("Item already exists");
         }
         if(hasReachedProductLimit()) {
-            throw new SystemError("Product limit reached please remove products before adding new ones");
+            throw new IllegalStateException("Product limit reached please remove products before adding new ones");
         }
         items.put(managedProduct.getId(), managedProduct);
         return items.get(managedProduct.getId());
@@ -52,6 +50,10 @@ public class ItemDatabase {
     //I want to be able to update the stock without worrying about updating other parts of the item by accident
     public void updateItemStock(String id, int stockAmount) {
         ManagedProduct managedProduct = getItemsById(id);
+
+        if (stockAmount > managedProduct.getLimit()) {
+            throw new IllegalStateException("Over the stock limit");
+        }
         managedProduct.setStock(stockAmount);
         items.put(id, managedProduct);
     }
@@ -62,7 +64,7 @@ public class ItemDatabase {
 
     public ManagedProduct getItemsById(String id) {
         if(!items.containsKey(id)) {
-            throw new BadInput("Item does not exist");
+            throw new IllegalArgumentException("Item does not exist");
         }
         return items.get(id);
     }

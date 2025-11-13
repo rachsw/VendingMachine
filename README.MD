@@ -28,3 +28,20 @@ Things to do:
  - Instantiation of the Vending machine. e.g instantiate vending machine with x amount of products and a list of coins and their stock.
  - Products, storing the products, creating new products etc
  - Cash, Figuring out change, checking the till if the change exists, adding new change. we need to add change to db and then return new set of change
+
+
+1. track number of items
+   2. set number of items 
+   3. get number of items 
+   4. set product price
+   5. get product price
+   6. set nunmber of coins
+   7. get number of coins
+      IllegalStateException - cant have the machine in that state
+   8. IllegalArgumentException - product doesn't exist.
+   9. if the parameters are invalid (non-existing managedProduct slot referenced, not enough money provided).
+2. track change
+3. return correct change
+4. 2 interfaces
+   5. get price of product
+   6. buy product, accepts slot identifier, coins, returns coins

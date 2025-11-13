@@ -1,7 +1,5 @@
 package org.example.service;
 
-import org.example.exceptions.BadInput;
-import org.example.exceptions.SystemError;
 import org.example.model.ChangeConfiguration;
 import org.example.model.ChangeItem;
 
@@ -10,7 +8,7 @@ import java.util.*;
 public class CashRegisterService {
     //Will order the keys
     private final Map<Integer, ChangeConfiguration> changeTill = new TreeMap<>(Comparator.reverseOrder());
-
+    private final Map<Integer, Integer> temporaryChangeStore = new HashMap<>();
 
     public CashRegisterService() {
         setupDefaultTill();
@@ -26,108 +24,91 @@ public class CashRegisterService {
 
     public ChangeConfiguration getCoinItem(int coin) {
         if (!changeTill.containsKey(coin)) {
-            throw new BadInput("Item does not exist");
+            throw new IllegalArgumentException("Item does not exist");
         }
         return changeTill.get(coin);
     }
 
     public void updateCoinStock(int coin, int stock) {
         ChangeConfiguration changeConfiguration = getCoinItem(coin);
+        if (stock > changeConfiguration.getLimit()) {
+            throw new IllegalStateException("Over the stock limit");
+        }
         changeConfiguration.setStock(stock);
         changeTill.put(coin, changeConfiguration);
     }
 
     //Todo Steps to implement
-    public void purchaseProductWithCoins(List<ChangeItem> cashGiven, int price){
+    public List<ChangeItem> purchaseProductWithCoins(List<ChangeItem> cashGiven, int price) {
         // the product service provides the cash service with the price and cash given
         //we need to first validate the coins are ones we can accept
+        validateChange(cashGiven);
         //then we temporarily store the coins somewhere
+        for (ChangeItem cash : cashGiven) {
+            temporaryChangeStore.put(cash.getValue(), cash.getStock());
+        }
         // if there is enough change exactly we return no change
+        var change = getChange(cashGiven, price);
         // if there is not enough change we return the change and cancel the operation
         // if there is change leftover we
         //loop through and see how much change we need to provide and make checks to see if the change has stock in both the till and temporary holder
         //if we dont have enough change throw an error and stop the purchase
         // if we do have enough change then we provide that back to the user
         //then we put the temporary change in the till
-        // then we take away and change we want to give to the user
+        // then we take away the change we want to give to the user from the till
+        for (ChangeItem changeItem : change) {
+            updateCoinStock(changeItem.getValue(), getCoinItem(changeItem.getValue()).getStock() - changeItem.getStock());
+        }
+        return change;
     }
 
-    public void validateChange(List<ChangeItem> cashGiven, int price) {
+    //helper method
+    public void validateChange(List<ChangeItem> cashGiven) {
         //need to check all the coins are ones we accept.
         boolean hasInvalid = cashGiven.stream()
                 .anyMatch(coin -> !changeTill.containsKey(coin.getValue()));
 
         if (hasInvalid) {
             //return the coins here
-            throw new BadInput("Some coins aren't accepted");
+            throw new IllegalArgumentException("Some coins aren't accepted");
         }
     }
 
-//    // note we need to ensure there is enough change in the till before returning it
-//    public List<ChangeItem> getChange(List<ChangeItem> cashGiven, int price) throws Exception {
-//
-//        for (ChangeItem cash : cashGiven) {
-//            price = price - (cash.getValue() * cash.getStock());
-//        }
-//        if(price == 0) {
-//            //correct amount of change
-//            return new ArrayList<>();
-//        }
-//        //overpaid
-//        if(price < 0) {
-//            return calculateChange(Math.abs(price));
-//        }
-//        else {
-//            throw new BadInput("Not enough cash provided ");
-//        }
-//    }
-
     // note we need to ensure there is enough change in the till before returning it
-    public List<ChangeItem> getChange(List<ChangeItem> cashGiven, int price) throws Exception {
+    public List<ChangeItem> getChange(List<ChangeItem> cashGiven, int price) {
         int totalGiven = cashGiven.stream()
                 .mapToInt(c -> c.getValue() * c.getStock())
                 .sum();
 
         if (totalGiven < price) {
-            throw new BadInput("Not enough cash provided");
+            throw new IllegalArgumentException("Not enough cash provided");
         }
 
-        if (totalGiven == price){
-            //add all the change to the till
+        if (totalGiven == price) {
+            for (Integer changeItem : temporaryChangeStore.keySet()) {
+                //update coin stock to the existing till stock
+                updateCoinStock(changeItem, changeTill.get(changeItem).getStock() + temporaryChangeStore.get(changeItem));
+            }
+            //no change needed to return
             return List.of();
-        }
-        Map<Integer, Integer> tempCashGivenTill = new HashMap<>();
-        for (ChangeItem cash : cashGiven) {
-            tempCashGivenTill.put(cash.getValue(), cash.getStock());
         }
 
         int leftOver = totalGiven - price;
-        return calculateChange(leftOver, tempCashGivenTill);
+        return calculateChange(leftOver);
     }
 
-    private List<ChangeItem> calculateChange(int amountToReturn, Map<Integer, Integer> temporaryChangeTill) {
-//        List<ChangeItem> change = new ArrayList<>();
-//
-//        for (int coin : temporaryTill.keySet()) {
-//            int count = amountToReturn / coin;
-//            if (count > 0) {
-//                change.add(new ChangeItem(coin, count));
-//                amountToReturn -= coin * count;
-//            }
-//        }
-//
-//        if (amountToReturn > 0) {
-//            throw new SystemError("Not enough coins");
-//        }
-//        return change;
+    boolean validateStockAvailable(int key, int stock) {
+        var tempStock = temporaryChangeStore.get(key) == null ? 0 : temporaryChangeStore.get(key);
+        var tillStock = changeTill.get(key).getStock();
+        return stock < tempStock + tillStock;
+    }
 
+    private List<ChangeItem> calculateChange(int amountToReturn) {
         List<ChangeItem> change = new ArrayList<>();
         for (int key : changeTill.keySet()) {
             int stock = 0;
             while (amountToReturn >= key) {
-                var tempStock = temporaryChangeTill.get(key) == null ? 0 : temporaryChangeTill.get(key) ;
-                var tillStock = changeTill.get(key).getStock();
-                if(stock < tempStock + tillStock) {
+                if(validateStockAvailable(key, stock)) {
                     amountToReturn = amountToReturn - key;
                     stock++;
                 } else {
@@ -140,7 +121,7 @@ public class CashRegisterService {
         }
 
         if (amountToReturn > 0) {
-            throw new SystemError("Not enough coins");
+            throw new IllegalStateException("Not enough coins");
         }
         return change;
     }

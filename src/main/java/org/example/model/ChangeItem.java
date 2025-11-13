@@ -2,6 +2,8 @@ package org.example.model;
 
 import java.util.Objects;
 
+//simplify this.
+//we can definitely just have a map of the change and the value.....
 public class ChangeItem {
     int value;
     int stock;

@@ -14,9 +14,5 @@ public interface OperatorInterface {
     ManagedProduct createItem(ManagedProduct managedProduct);
 
     List<ChangeConfiguration> getTillContents();
-//    //do we need this??
-//    void removeCashItem(int coin);
-//    //do we also need this??
-//    ChangeItem addCashItem(ChangeConfiguration coin);
     void updateCashStock(int coin, int stock);
 }
