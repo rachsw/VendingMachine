@@ -1,6 +1,6 @@
-package org.example;
+package org.example.interfacepackage;
 
-import org.example.model.ChangeConfiguration;
+import org.example.model.CoinItem;
 import org.example.model.Product;
 
 import java.util.List;
@@ -12,6 +12,6 @@ public interface ConsumerInterface {
     //get the products price
     Product viewProduct(String productId);
 
-    List<ChangeConfiguration> purchaseProduct(String productId, List<ChangeConfiguration> change);
+    List<CoinItem> purchaseProduct(String productId, List<CoinItem> change);
 
 }

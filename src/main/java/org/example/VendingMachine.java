@@ -1,7 +1,9 @@
 package org.example;
 
 import org.example.database.ItemDatabase;
-import org.example.model.ChangeConfiguration;
+import org.example.interfacepackage.ConsumerInterface;
+import org.example.interfacepackage.OperatorInterface;
+import org.example.model.CoinItem;
 import org.example.model.ManagedProduct;
 import org.example.model.Product;
 import org.example.service.CashRegisterService;
@@ -10,11 +12,11 @@ import java.util.List;
 
 public class VendingMachine implements ConsumerInterface, OperatorInterface {
     final int itemsLimit;
-    final List<ChangeConfiguration> acceptedCoins;
+    final List<CoinItem> acceptedCoins;
     final ItemDatabase itemsDb;
     final CashRegisterService cashRegisterService;
 
-    public VendingMachine(int itemsLimit, List<ChangeConfiguration> acceptedCoins) {
+    public VendingMachine(int itemsLimit, List<CoinItem> acceptedCoins) {
         this.itemsLimit = itemsLimit;
         this.acceptedCoins = acceptedCoins;
         this.itemsDb = new ItemDatabase(itemsLimit);
@@ -36,7 +38,7 @@ public class VendingMachine implements ConsumerInterface, OperatorInterface {
         return new Product(managedProduct.getId(), managedProduct.getPrice(), managedProduct.getStock());
     }
 
-    public List<ChangeConfiguration> purchaseProduct(String productId, List<ChangeConfiguration> change) {
+    public List<CoinItem> purchaseProduct(String productId, List<CoinItem> change) {
         var itemStock = itemsDb.getItemsById(productId).getStock();
         if (itemStock <= 0) {
             throw new IllegalStateException("Not enough stock of this product");
@@ -69,7 +71,7 @@ public class VendingMachine implements ConsumerInterface, OperatorInterface {
         return itemsDb.createItem(managedProduct);
     }
 
-    public List<ChangeConfiguration> getTillContents() {
+    public List<CoinItem> getTillContents() {
         return cashRegisterService.getTillItems();
     }
 

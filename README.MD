@@ -10,7 +10,7 @@ Assumptions
 Out of scope
 - transactions 
 - keeping track of when the machine was updated and when products were tracked. let's pretend that was done externally.
-- 
+- tracking the limitations of coins. to keep it simple for calculating change we assume no limitations on how many coins the vending machine can store
 
 Questions
 Do we want to store each transaction ? e.g a log of everything that has been purchased?

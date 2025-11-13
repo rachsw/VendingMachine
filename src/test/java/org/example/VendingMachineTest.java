@@ -1,7 +1,7 @@
 package org.example;
 
 
-import org.example.model.ChangeConfiguration;
+import org.example.model.CoinItem;
 import org.example.model.ManagedProduct;
 import org.example.model.Product;
 import org.junit.jupiter.api.Assertions;
@@ -15,21 +15,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class VendingMachineTest {
 
     private final VendingMachine vendingMachine = new VendingMachine(5, Arrays.asList(
-            new ChangeConfiguration(200,  10),
-            new ChangeConfiguration(100,  10),
-            new ChangeConfiguration(50,  10),
-            new ChangeConfiguration(20,  10),
-            new ChangeConfiguration(10, 10)
+            new CoinItem(200,  10),
+            new CoinItem(100,  10),
+            new CoinItem(50,  10),
+            new CoinItem(20,  10),
+            new CoinItem(10, 10)
     ));
 
     @Test
     void canAddNewProductToVendingMachine() {
         VendingMachine vm = new VendingMachine(5, Arrays.asList(
-                new ChangeConfiguration(200,  10),
-                new ChangeConfiguration(100,  10),
-                new ChangeConfiguration(50,  10),
-                new ChangeConfiguration(20,  10),
-                new ChangeConfiguration(10,  10)
+                new CoinItem(200,  10),
+                new CoinItem(100,  10),
+                new CoinItem(50,  10),
+                new CoinItem(20,  10),
+                new CoinItem(10,  10)
         ));
         vm.createItem(new ManagedProduct("A1", 200, 10));
         assertEquals(.50d, vm.viewProducts().size(),1);
@@ -38,11 +38,11 @@ class VendingMachineTest {
     @Test
     void canUpdateItemPriceInVendingMachine() {
         VendingMachine vm = new VendingMachine(5, Arrays.asList(
-                new ChangeConfiguration(200,  10),
-                new ChangeConfiguration(100,  10),
-                new ChangeConfiguration(50,  10),
-                new ChangeConfiguration(20,  10),
-                new ChangeConfiguration(10,  10)
+                new CoinItem(200,  10),
+                new CoinItem(100,  10),
+                new CoinItem(50,  10),
+                new CoinItem(20,  10),
+                new CoinItem(10,  10)
         ));
         vm.createItem(new ManagedProduct("A1", 200, 10));
         //Todo fix me

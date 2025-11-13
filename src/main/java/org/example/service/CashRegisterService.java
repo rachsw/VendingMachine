@@ -1,50 +1,50 @@
 package org.example.service;
 
-import org.example.model.ChangeConfiguration;
-import org.example.model.ChangeItem;
+import org.example.model.CoinItem;
 
 import java.util.*;
 
 public class CashRegisterService {
     //Will order the keys
-    private final Map<Integer, ChangeConfiguration> changeTill = new TreeMap<>(Comparator.reverseOrder());
+    private final Map<Integer, Integer> changeTill = new TreeMap<>(Comparator.reverseOrder());
     private final Map<Integer, Integer> temporaryChangeStore = new HashMap<>();
 
     public CashRegisterService() {
         setupDefaultTill();
     }
 
-    public CashRegisterService(List<ChangeConfiguration> changeConfigurations) {
+    public CashRegisterService(List<CoinItem> changeConfigurations) {
         setupTill(changeConfigurations);
     }
 
-    public List<ChangeConfiguration> getTillItems() {
-        return new ArrayList<>(changeTill.values());
+    //helper method
+    public CoinItem coinItemMapper(Integer value, Integer stock) {
+        return new CoinItem(value, stock);
     }
 
-    public ChangeConfiguration getCoinItem(int coin) {
+    public List<CoinItem> getTillItems() {
+        var mappedValues = changeTill.keySet().stream().map(key -> coinItemMapper(key, changeTill.get(key))).toList();
+        return new ArrayList<>(mappedValues);
+    }
+
+    public CoinItem getCoinItem(int coin) {
         if (!changeTill.containsKey(coin)) {
             throw new IllegalArgumentException("Item does not exist");
         }
-        return changeTill.get(coin);
+        return coinItemMapper(coin, changeTill.get(coin));
     }
 
     public void updateCoinStock(int coin, int stock) {
-        ChangeConfiguration changeConfiguration = getCoinItem(coin);
-        if (stock > changeConfiguration.getLimit()) {
-            throw new IllegalStateException("Over the stock limit");
-        }
-        changeConfiguration.setStock(stock);
-        changeTill.put(coin, changeConfiguration);
+        changeTill.put(coin, stock);
     }
 
     //Todo Steps to implement
-    public List<ChangeItem> purchaseProductWithCoins(List<ChangeItem> cashGiven, int price) {
+    public List<CoinItem> purchaseProductWithCoins(List<CoinItem> cashGiven, int price) {
         // the product service provides the cash service with the price and cash given
         //we need to first validate the coins are ones we can accept
         validateChange(cashGiven);
         //then we temporarily store the coins somewhere
-        for (ChangeItem cash : cashGiven) {
+        for (CoinItem cash : cashGiven) {
             temporaryChangeStore.put(cash.getValue(), cash.getStock());
         }
         // if there is enough change exactly we return no change
@@ -56,14 +56,14 @@ public class CashRegisterService {
         // if we do have enough change then we provide that back to the user
         //then we put the temporary change in the till
         // then we take away the change we want to give to the user from the till
-        for (ChangeItem changeItem : change) {
-            updateCoinStock(changeItem.getValue(), getCoinItem(changeItem.getValue()).getStock() - changeItem.getStock());
+        for (CoinItem coinItem : change) {
+            updateCoinStock(coinItem.getValue(), getCoinItem(coinItem.getValue()).getStock() - coinItem.getStock());
         }
         return change;
     }
 
     //helper method
-    public void validateChange(List<ChangeItem> cashGiven) {
+    public void validateChange(List<CoinItem> cashGiven) {
         //need to check all the coins are ones we accept.
         boolean hasInvalid = cashGiven.stream()
                 .anyMatch(coin -> !changeTill.containsKey(coin.getValue()));
@@ -75,7 +75,7 @@ public class CashRegisterService {
     }
 
     // note we need to ensure there is enough change in the till before returning it
-    public List<ChangeItem> getChange(List<ChangeItem> cashGiven, int price) {
+    public List<CoinItem> getChange(List<CoinItem> cashGiven, int price) {
         int totalGiven = cashGiven.stream()
                 .mapToInt(c -> c.getValue() * c.getStock())
                 .sum();
@@ -87,7 +87,7 @@ public class CashRegisterService {
         if (totalGiven == price) {
             for (Integer changeItem : temporaryChangeStore.keySet()) {
                 //update coin stock to the existing till stock
-                updateCoinStock(changeItem, changeTill.get(changeItem).getStock() + temporaryChangeStore.get(changeItem));
+                updateCoinStock(changeItem, changeTill.get(changeItem) + temporaryChangeStore.get(changeItem));
             }
             //no change needed to return
             return List.of();
@@ -99,12 +99,12 @@ public class CashRegisterService {
 
     boolean validateStockAvailable(int key, int stock) {
         var tempStock = temporaryChangeStore.get(key) == null ? 0 : temporaryChangeStore.get(key);
-        var tillStock = changeTill.get(key).getStock();
+        var tillStock = changeTill.get(key);
         return stock < tempStock + tillStock;
     }
 
-    private List<ChangeItem> calculateChange(int amountToReturn) {
-        List<ChangeItem> change = new ArrayList<>();
+    private List<CoinItem> calculateChange(int amountToReturn) {
+        List<CoinItem> change = new ArrayList<>();
         for (int key : changeTill.keySet()) {
             int stock = 0;
             while (amountToReturn >= key) {
@@ -116,7 +116,7 @@ public class CashRegisterService {
                 }
             }
             if (stock > 0) {
-                change.add(new ChangeItem(key, stock));
+                change.add(new CoinItem(key, stock));
             }
         }
 
@@ -136,17 +136,16 @@ public class CashRegisterService {
 //    }
 
     private void setupDefaultTill() {
-        changeTill.put(200, new ChangeConfiguration(200, 10));
-        changeTill.put(100, new ChangeConfiguration(100, 10));
-        changeTill.put(50, new ChangeConfiguration(100, 10));
-        changeTill.put(20, new ChangeConfiguration(100, 10));
-        changeTill.put(10, new ChangeConfiguration(10, 20));
-        changeTill.values().forEach(config -> config.setStock(5));
+        changeTill.put(200, 10);
+        changeTill.put(100, 10);
+        changeTill.put(50, 10);
+        changeTill.put(20, 10);
+        changeTill.put(10, 10);
     }
 
-    void setupTill(List<ChangeConfiguration> configurations) {
-        for (ChangeConfiguration configuration : configurations) {
-            changeTill.put(configuration.getValue(), configuration);
+    void setupTill(List<CoinItem> configurations) {
+        for (CoinItem configuration : configurations) {
+            changeTill.put(configuration.getValue(), configuration.getStock());
         }
     }
 }

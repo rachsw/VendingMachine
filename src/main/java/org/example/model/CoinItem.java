@@ -4,11 +4,11 @@ import java.util.Objects;
 
 //simplify this.
 //we can definitely just have a map of the change and the value.....
-public class ChangeItem {
+public class CoinItem {
     int value;
     int stock;
 
-    public ChangeItem(int value, int stock) {
+    public CoinItem(int value, int stock) {
         this.value = value;
         this.stock = stock;
     }
@@ -28,7 +28,7 @@ public class ChangeItem {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ChangeItem that)) return false;
+        if (!(o instanceof CoinItem that)) return false;
         return value == that.value && stock == that.stock;
     }
 
