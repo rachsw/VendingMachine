@@ -20,19 +20,54 @@ this is because i would imagine in a normal scenario we want to optimise the amo
 to the client by giving fewer coins as possible starting from the larger coins first. 
 This means we can maintain a stock of coins betters e.g giving back 1p instead of 10 10p seems more optimised.
 
+
 ### How to instantiate the VendingMachine
-The Vending Machine is instantiated by calling new VendingMachine({AmountOfProductAvailable, List[CoinItems]}), where coin items are new CoinItem({value of the coin}, {stock of the coin})
+To build
+``` mvn clean package```
+
+### Setting up the machine
+The Vending Machine is instantiated by calling new VendingMachine({AmountOfProductAvailable}, List[CoinItems]}), where coin items are new CoinItem({value of the coin}, {stock of the coin})
 e.g for a vending Machine that can have 5 products, and coins representing 2pounds = 200, 1pound = 100a and 50 = 50pence
 ```
-new VendingMachine(5, List.of(
+VendingMachine vendingMachine = new VendingMachine(5, List.of(
     new CoinItem(200,  10),
     new CoinItem(100,  10),
     new CoinItem(50,  10),
     new CoinItem(20,  10),
-    new CoinItem(10, 10));
+    new CoinItem(10, 10)));
+```
+To add items to the machine an operator must create the Items
+```declarative
+        vendingMachine.createItem(new ManagedProduct("A1 Coke", 140, 20));
+        vendingMachine.createItem(new ManagedProduct("A2 Sprite", 130, 20));
+        vendingMachine.createItem(new ManagedProduct("A3 Chocolate", 150, 20));
+        vendingMachine.createItem(new ManagedProduct("A4 Coke Zero", 150, 20));
+        vendingMachine.createItem(new ManagedProduct("A5 Coke Diet", 150, 20));
 ```
 
-Note: the only instantiation of the VendingMachine instance is done via tests and I have not utilised the main class (which can also be used to demonstrate operations for the vending machine).
+and add stock of the item as it defaults to 0 (assuming the operator has to stock after instiating)
+
+```declarative
+ vendingMachine.updateItemStock("A1 Coke", 5);
+vendingMachine.updateItemStock("A2 Sprite", 5);
+vendingMachine.updateItemStock("A3 Chocolate", 5);
+vendingMachine.updateItemStock("A4 Coke Zero", 5);
+vendingMachine.updateItemStock("A5 Coke Diet", 5);
+```
+
+### Using the machine
+
+To Check available products 
+```declarative
+vendingMachine.viewProducts()
+```
+to purchase a product and get the change back
+```declarative
+var change = vendingMachine.purchaseProduct("A1 Coke", List.of(
+                new CoinItem(100, 2)));
+```
+The till and product stock should update accordingly
+
 This is simply due to time constraints.
 The VendingMachine implements 2 interfaces: [ConsumerInterface.java](src/main/java/org/example/interfacepackage/ConsumerInterface.java) and [OperatorInterface.java](src/main/java/org/example/interfacepackage/OperatorInterface.java)
 
@@ -86,3 +121,8 @@ The Vending Machine supports a series of error scenarios these may include the f
 
 I have added test coverage to validate some common scenarios and to validate how i believe some methods should work
 These tests also demonstrate how I might  unit test my system but definitely they don't cover all scenarios and are very lightly asserting so i could check me methods worked.
+
+### Given more time
+1. Split out the classes further. It is not ideal to have all the cashregister service containing transaction methods + helper methods and the coin till storage. This was only so I could bundle the transaction of calculating coins and ensuring i could isolate the method changes. 
+2. Full implement more functionality, currently we can have an unlimited number of coins stored.
+3. Have a proper coin storage that does not sit in a service. 

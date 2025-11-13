@@ -13,8 +13,8 @@ import java.util.List;
 public class VendingMachine implements ConsumerInterface, OperatorInterface {
     final int itemsLimit;
     final List<CoinItem> acceptedCoins;
-    final ItemDatabase itemsDb;
-    final CashRegisterService cashRegisterService;
+    final private ItemDatabase itemsDb;
+    final private CashRegisterService cashRegisterService;
 
     public VendingMachine(int itemsLimit, List<CoinItem> acceptedCoins) {
         this.itemsLimit = itemsLimit;

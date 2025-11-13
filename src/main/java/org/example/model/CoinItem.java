@@ -33,4 +33,12 @@ public class CoinItem {
     public int hashCode() {
         return Objects.hash(value, stock);
     }
+
+    @Override
+    public String toString() {
+        return "CoinItem{" +
+                "value=" + value +
+                ", stock=" + stock +
+                '}';
+    }
 }
