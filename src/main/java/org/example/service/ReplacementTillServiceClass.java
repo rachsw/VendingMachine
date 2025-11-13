@@ -9,43 +9,33 @@ public class ReplacementTillServiceClass {
     private final Map<Integer, Integer> changeTill = new TreeMap<>(Comparator.reverseOrder());
 
     public List<CoinItem> processCoinTransaction(List<CoinItem> coinsProvided, int price) {
-        //validate coinsProvided types: done
-        validateCoinsAreCorrectType(coinsProvided);
 
-        //check if coinsProvided are enough
-        var totalReceivedAmount = calculateTotalReceived(coinsProvided, price);
-        //not enough, dont add to till
-        //throw error
-        //do we catch error in vending machine and return change? possibly
+        validateCoinsAreCorrectType(coinsProvided); //validate coinsProvided types: done
+
+        var totalReceivedAmount = calculateTotalReceived(coinsProvided, price);//check if coinsProvided are enough
+
         if (totalReceivedAmount < price) {
-            throw new IllegalArgumentException("Not enough cash provided");
+            throw new IllegalArgumentException("Not enough cash provided");//not enough, dont add to till //throw error //do we catch error in vending machine and return change? possibly
         }
 
-        //check if coinsProvided add up to price.
-        if (totalReceivedAmount == price) {
-            //add to till
-            //return emptyList
+        if (totalReceivedAmount == price) {//check if coinsProvided add up to price.
             coinsProvided.forEach(
                     coin -> updateCoinStock(
                             coin.getValue(), changeTill.get(coin.getValue()) + coin.getStock())
-            );
-            return List.of();
+            );//add to till
+
+            return List.of();//return emptyList
         }
 
-        //coinsProvided add up to price with extra,
-        var changeRequired = totalReceivedAmount - price;
-        //check how much change we need
-        //check stock of how much change we need
-        //make temporary till
-        var temporaryTill = getCoinsAvailable(coinsProvided);
+        var changeRequired = totalReceivedAmount - price; //coinsProvided add up to price with extra,
 
-        //not enough stock, throw error, return change
-        //enough stock,
-        var coinsToReturn =  calculateChangeToGiveBasedOnSimulatedTill(temporaryTill, changeRequired);
-        //add money to till
-        updateTillAfterChange(temporaryTill, coinsToReturn);
-        return coinsToReturn;
-        // return correct amount of change
+        var temporaryTill = getCoinsAvailable(coinsProvided); //check how much change we need by making temporary till
+
+        var coinsToReturn =  calculateChangeToGiveBasedOnSimulatedTill(temporaryTill, changeRequired); //not enough stock, throw error, return change
+
+        updateTillAfterChange(temporaryTill, coinsToReturn); //enough stock, //add money to till
+        return coinsToReturn; // return correct amount of change
+
     }
 
     private void updateTillAfterChange(Map<Integer, Integer> temporaryTill, List<CoinItem> coinsToReturn) {
@@ -53,7 +43,6 @@ public class ReplacementTillServiceClass {
                 temporaryTill.computeIfPresent(coin.getValue(),
                         (k, v) -> v - coin.getStock())
         );
-
         // Commit simulated till state to real till
         changeTill.putAll(temporaryTill);
     }
