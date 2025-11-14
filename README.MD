@@ -1,12 +1,13 @@
 
 [Instructions.MD](Instructions.MD)
-
+This vending machine is based off the instructions above
 Assumptions
-- only one managedProduct is bought at a time? e.g how can multiple people buy from the same vending machine at the same time?
-- Currency is not an issue, can account for it later? e.g validation for currency being the correct currency
+- only one product is bought at a time, e.g build to assume one person is interacting with the vending machine at a time
+- Currency is not an issue, can account for it later? e.g validation for currency being the correct currency and storing the correct currencies
 - We won't validate the operator providing the wrong change in e.g adding 0.3, but I would in the future validate the operator has valid coins for updating the machine 
 - supported coin types should be seen as immutable for any given instance of the vending machine
 - a vending machine starts out with product slots and then an operator adds products to each stock.
+- An operator is able to stock the machine up by the multiple
 
 Out of scope
 - transactions, not keeping track of the transaction history or any history of coins stored.
@@ -19,7 +20,6 @@ It is possible to overpay the vending machine by a certain amount of coins and t
 this is because i would imagine in a normal scenario we want to optimise the amount of coins being returned 
 to the client by giving fewer coins as possible starting from the larger coins first. 
 This means we can maintain a stock of coins betters e.g giving back 1p instead of 10 10p seems more optimised.
-
 
 ### How to instantiate the VendingMachine
 To build
@@ -59,7 +59,7 @@ vendingMachine.updateItemStock("A5 Coke Diet", 5);
 
 To Check available products 
 ```declarative
-vendingMachine.viewProducts()
+vendingMachine.viewProducts();
 ```
 to purchase a product and get the change back
 ```declarative
@@ -67,8 +67,9 @@ var change = vendingMachine.purchaseProduct("A1 Coke", List.of(
                 new CoinItem(100, 2)));
 ```
 The till and product stock should update accordingly
+```vendingMachine.getTillContents()```
 
-This is simply due to time constraints.
+
 The VendingMachine implements 2 interfaces: [ConsumerInterface.java](src/main/java/org/example/interfacepackage/ConsumerInterface.java) and [OperatorInterface.java](src/main/java/org/example/interfacepackage/OperatorInterface.java)
 
 ## The operator interface
@@ -116,13 +117,14 @@ The Vending Machine supports a series of error scenarios these may include the f
    - This is done by making a copy of the existing till, adding the proposed change in from the user after validating the change contents and then writing the updates to the till after we've calculated the correct change.
 2. I enclosed all till operations inside of one service so i could utilise a synchronized lock this was to enable me to lock the service and prevent a possiblity of threads trying to conditionally write to the till while I was calculating and validating the change.
    - this however does not solve all race conditions as this introduces an issue with my product DB not staying consistent in case the till has a service issue we could possibly accidentally update a product without checking the till transaction was successful.
+   - We would need to account for this in the future especially if we split out the productDb and coinDb into seperate external DB.
 
 ###  Test coverage
 
 I have added test coverage to validate some common scenarios and to validate how i believe some methods should work
-These tests also demonstrate how I might  unit test my system but definitely they don't cover all scenarios and are very lightly asserting so i could check me methods worked.
+These tests also demonstrate how I might  unit test my system but definitely  don't cover all scenarios and are very lightly asserting so i could check me methods worked.
 
 ### Given more time
 1. Split out the classes further. It is not ideal to have all the cashregister service containing transaction methods + helper methods and the coin till storage. This was only so I could bundle the transaction of calculating coins and ensuring i could isolate the method changes. 
-2. Full implement more functionality, currently we can have an unlimited number of coins stored.
+2. Fully implement more functionality, currently we can have an unlimited number of coins stored.
 3. Have a proper coin storage that does not sit in a service. 
