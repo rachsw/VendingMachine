@@ -1,12 +1,12 @@
-package org.example;
+package org.VendingMachine;
 
-import org.example.database.ItemDatabase;
-import org.example.interfacepackage.ConsumerInterface;
-import org.example.interfacepackage.OperatorInterface;
-import org.example.model.CoinItem;
-import org.example.model.ManagedProduct;
-import org.example.model.Product;
-import org.example.service.CashRegisterService;
+import org.VendingMachine.database.ItemDatabase;
+import org.VendingMachine.interfacepackage.ConsumerInterface;
+import org.VendingMachine.interfacepackage.OperatorInterface;
+import org.VendingMachine.model.CoinItem;
+import org.VendingMachine.model.ManagedProduct;
+import org.VendingMachine.model.Product;
+import org.VendingMachine.service.CashRegisterService;
 
 import java.util.List;
 

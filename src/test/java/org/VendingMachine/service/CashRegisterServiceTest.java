@@ -1,7 +1,7 @@
-package org.example.service;
+package org.VendingMachine.service;
 
 
-import org.example.model.CoinItem;
+import org.VendingMachine.model.CoinItem;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

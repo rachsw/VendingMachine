@@ -1,7 +1,7 @@
-package org.example.interfacepackage;
+package org.VendingMachine.interfacepackage;
 
-import org.example.model.CoinItem;
-import org.example.model.Product;
+import org.VendingMachine.model.CoinItem;
+import org.VendingMachine.model.Product;
 
 import java.util.List;
 

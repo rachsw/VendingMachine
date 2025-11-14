@@ -1,4 +1,4 @@
-package org.example.model;
+package org.VendingMachine.model;
 
 public class ManagedProduct extends Product
  {

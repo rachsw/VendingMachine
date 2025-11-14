@@ -1,6 +1,6 @@
-package org.example.database;
+package org.VendingMachine.database;
 
-import org.example.model.ManagedProduct;
+import org.VendingMachine.model.ManagedProduct;
 
 
 import java.util.ArrayList;

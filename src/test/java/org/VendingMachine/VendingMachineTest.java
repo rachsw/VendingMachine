@@ -1,9 +1,9 @@
-package org.example;
+package org.VendingMachine;
 
 
-import org.example.model.CoinItem;
-import org.example.model.ManagedProduct;
-import org.example.model.Product;
+import org.VendingMachine.model.CoinItem;
+import org.VendingMachine.model.ManagedProduct;
+import org.VendingMachine.model.Product;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

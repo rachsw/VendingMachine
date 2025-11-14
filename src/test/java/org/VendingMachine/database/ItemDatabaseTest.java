@@ -1,6 +1,6 @@
-package org.example.database;
+package org.VendingMachine.database;
 
-import org.example.model.ManagedProduct;
+import org.VendingMachine.model.ManagedProduct;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package org.example.model;
+package org.VendingMachine.model;
 
 import java.util.Objects;
 

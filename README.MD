@@ -12,7 +12,7 @@ Out of scope
 - transactions, not keeping track of the transaction history or any history of coins stored.
 - keeping track of when the machine was updated and when products were tracked. let's pretend that was done externally.
 - tracking the limitations of coins. to keep it simple for calculating change we assume no limitations on how many coins the vending machine can store
-
+- Using frameworks and libraries. I went with mostly just core java but lombok for example could be used for model creation
 
 ###  Giving different change back
 It is possible to overpay the vending machine by a certain amount of coins and then get a whole other set of coins back

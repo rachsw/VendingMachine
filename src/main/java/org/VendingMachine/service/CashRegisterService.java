@@ -1,6 +1,6 @@
-package org.example.service;
+package org.VendingMachine.service;
 
-import org.example.model.CoinItem;
+import org.VendingMachine.model.CoinItem;
 
 import java.util.*;
 

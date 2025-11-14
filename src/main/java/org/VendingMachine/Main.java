@@ -1,7 +1,7 @@
-package org.example;
+package org.VendingMachine;
 
-import org.example.model.CoinItem;
-import org.example.model.ManagedProduct;
+import org.VendingMachine.model.CoinItem;
+import org.VendingMachine.model.ManagedProduct;
 
 import java.util.List;
 
@@ -31,6 +31,18 @@ public class Main {
         System.out.println("Your change is:  " + change);
         System.out.println("Items in vending machine after purchase: " + vendingMachine.viewProducts());
         System.out.println("remaining change in machine: " + vendingMachine.getTillContents());
+
+        var change2 = vendingMachine.purchaseProduct("A1 Coke", List.of(
+                new CoinItem(100, 1),
+                new CoinItem(10, 4)));
+        System.out.println("Your change is:  " + change2);
+        System.out.println("Items in vending machine after purchase: " + vendingMachine.viewProducts());
+        System.out.println("remaining change in machine: " + vendingMachine.getTillContents());
+
+        vendingMachine.purchaseProduct("A1 Coke", List.of(
+                new CoinItem(200, 1),
+                new CoinItem(20, 4)));
+        // should throw error
     }
 }
 
